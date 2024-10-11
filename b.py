@@ -20,7 +20,8 @@ def anonymize_phone(phone):
 
 def anonymize_text(text):
     name_dict = {}
-
+    
+    # テキストを行ごとに処理
     lines = text.split('\n')
     anonymized_lines = []
     
