@@ -2,7 +2,6 @@ import spacy
 import re
 import hashlib
 
-# SpaCyの日本語モデルをロード
 nlp = spacy.load("ja_core_news_trf") #ja_core_news_mdもいいらしい
 
 def generate_hash(text, length=4):
@@ -21,8 +20,7 @@ def anonymize_phone(phone):
 
 def anonymize_text(text):
     name_dict = {}
-    
-    # テキストを行ごとに処理
+
     lines = text.split('\n')
     anonymized_lines = []
     
@@ -30,7 +28,6 @@ def anonymize_text(text):
         doc = nlp(line)
         anonymized_line = line
 
-        # 人名の匿名化
         for ent in doc.ents:
             if ent.label_ == "PERSON":
                 if ent.text not in name_dict:
@@ -42,11 +39,9 @@ def anonymize_text(text):
                 anonymized_name = anonymize_name(ent.text, name_hash)
                 anonymized_line = anonymized_line.replace(ent.text, anonymized_name)
 
-        # メールアドレスの匿名化
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         anonymized_line = re.sub(email_pattern, lambda m: anonymize_email(m.group()), anonymized_line)
 
-        # 電話番号の匿名化（日本の形式）
         phone_pattern = r'(\+81|0)\d{1,4}[-\s]?\d{1,4}[-\s]?\d{4}'
         anonymized_line = re.sub(phone_pattern, lambda m: anonymize_phone(m.group()), anonymized_line)
 
@@ -54,7 +49,6 @@ def anonymize_text(text):
 
     return '\n'.join(anonymized_lines)
 
-# テスト用のサンプルテキスト
 sample_text = """
 山田太郎さんの連絡先は、メールアドレスがtaro.yamada@example.com、
 株式会社テクノロジーの田中社長も、この会議に参加する予定です。
